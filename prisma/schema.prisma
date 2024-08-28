@@ -14,9 +14,44 @@ datasource db {
 }
 
 model User {
-  id            Int            @id
-  username      String
-  phone_number  String
-  created_at    DateTime?      @default(now())
-  updated_at    DateTime?      @updatedAt
+  id                  Int           @id @default(autoincrement())
+  name                String
+  lastname            String?
+  email               String?
+  age                 Int?
+  image               String?
+  city                String?
+  social_media_link   String?
+  phone_number        String
+  confirmed           Boolean        @default(false)
+  created_at          DateTime?      @default(now())
+  updated_at          DateTime?      @updatedAt
+  videos              Video[]
+  videoLikes          VideoLikes[]
+
+  @@map("users")
+}
+
+model Video {
+  id                  Int            @id @default(autoincrement())
+  user_id             Int
+  link                String
+  under_moderation    Boolean        @default(true)
+  allowed             Boolean        @default(false)
+  created_at          DateTime?      @default(now())
+  updated_at          DateTime?      @updatedAt
+  users               User           @relation(fields: [user_id], references: [id])
+  videoLikes          VideoLikes[]
+
+  @@map("videos")
+}
+
+model VideoLikes {
+  id                  Int            @id @default(autoincrement())
+  user_id             Int
+  video_id            Int
+  video               Video          @relation(fields: [video_id], references: [id])
+  user                User           @relation(fields: [user_id], references: [id])
+
+  @@map("video_likes")
 }
