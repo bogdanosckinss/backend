@@ -40,6 +40,9 @@ export class UsersService {
       where: {
         id: parseInt(id),
       },
+      include: {
+        videos: true
+      }
     })
   }
 

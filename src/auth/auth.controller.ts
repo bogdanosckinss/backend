@@ -1,9 +1,20 @@
-import { Body, Controller, HttpStatus, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service'
 import { Public } from './decorators/public.decorator';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { isNull, isUndefined } from '../common/utils/validation.util';
 import { Origin } from './decorators/origin.decorator';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +28,19 @@ export class AuthController {
     @Body() props: any,
   ): Promise<any> {
     return this.authService.create({ ...props })
+  }
+
+  @Public()
+  @Delete('/logout')
+  async logout(
+    @CurrentUser() id: number,
+    @Res({passthrough: true}) res: FastifyReply,
+  ) {
+    if (!id) {
+      throw new BadRequestException
+    }
+
+    return res.clearCookie('rf').send()
   }
 
   @Public()

@@ -28,6 +28,7 @@ model User {
   updated_at          DateTime?      @updatedAt
   videos              Video[]
   videoLikes          VideoLikes[]
+  videoVotes          VideoVotes[]
 
   @@map("users")
 }
@@ -35,13 +36,16 @@ model User {
 model Video {
   id                  Int            @id @default(autoincrement())
   user_id             Int
+  song_id             Int            @default(1)
   link                String
   under_moderation    Boolean        @default(true)
   allowed             Boolean        @default(false)
   created_at          DateTime?      @default(now())
   updated_at          DateTime?      @updatedAt
   users               User           @relation(fields: [user_id], references: [id])
+  song                Song           @relation(fields: [song_id], references: [id])
   videoLikes          VideoLikes[]
+  videoVotes          VideoVotes[]
 
   @@map("videos")
 }
@@ -54,4 +58,28 @@ model VideoLikes {
   user                User           @relation(fields: [user_id], references: [id])
 
   @@map("video_likes")
+}
+
+
+model VideoVotes {
+  id                  Int            @id @default(autoincrement())
+  user_id             Int
+  video_id            Int
+  video               Video          @relation(fields: [video_id], references: [id])
+  user                User           @relation(fields: [user_id], references: [id])
+
+  @@map("video_votes")
+}
+
+model Song {
+  id                  Int            @id @default(autoincrement())
+  minus_link          String
+  plus_link           String
+  image_link          String
+  title               String
+  description         String
+  author_name         String
+  created_at          DateTime?      @default(now())
+  updated_at          DateTime?      @updatedAt
+  videos              Video[]
 }

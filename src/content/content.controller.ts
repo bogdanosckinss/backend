@@ -1,9 +1,11 @@
-import { BadRequestException, Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Query, Res, StreamableFile } from '@nestjs/common';
 import { ContentService } from './content.service'
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { VideoService } from '../video/video.service';
-import { ProfileDTO } from './dto/profile-d-t-o';
 import { Public } from '../auth/decorators/public.decorator';
+import { FastifyReply } from 'fastify';
+import {createReadStream} from 'fs'
+import { join } from 'path';
 
 @Controller('content')
 export class ContentController {
@@ -17,7 +19,46 @@ export class ContentController {
   async getContent(
     @Param('id') id
   ) {
-    return await this.contentService.getContent(id ?? 0)
+    return await this.contentService.getContent(id ?? 0) // TODO: remove
+  }
+
+  @Public()
+  @Get('/search/videos')
+  async findManyByQuery(
+    @Query('skip') skip,
+    @Query('query') query,
+  ) {
+    return await this.contentService.findManyVideosByUsername(skip ?? 0, query)
+  }
+
+  @Public()
+  @Get('/videos-to-moderate')
+  async getVideosToModerate(
+    @Query('skip') skip
+  ) {
+    return await this.contentService.getVideosToModerate(parseInt(skip ?? 0))
+  }
+
+  @Public()
+  @Get('/download/song')
+  async downloadSong(
+    @Query('id') id,
+    @Res({passthrough: true}) res: FastifyReply,
+  ) {
+    const file = createReadStream(join(process.cwd(), 'package.json'));
+    return new StreamableFile(file, {
+      type: 'application/json',
+      disposition: 'attachment; filename="package.json"'
+    })
+    //const song = await this.contentService.findFirstSongById(parseInt(id ?? 0))
+    return res.send()
+  }
+
+  @Public()
+  @Get('/songs')
+  async getSongs(
+  ) {
+    return await this.contentService.getSongs()
   }
 
   @Public()
@@ -25,7 +66,15 @@ export class ContentController {
   async getVideoById(
     @Param('id') id
   ) {
-    return await this.videoService.findOneById(id)
+    return await this.videoService.findOneById(id) // TODO: add song ID
+  }
+
+  @Public()
+  @Get('/users/:name')
+  async getUsersByName(
+    @Param('name') name
+  ) {
+    return await this.contentService.findManyUsersByName(name)
   }
 
   @Public()
@@ -34,6 +83,14 @@ export class ContentController {
     @Param('name') name
   ) {
     return await this.videoService.findManyByName(name)
+  }
+
+  @Public()
+  @Post('/update-video-moderation/status')
+  async updateVideoModerationStatus(
+    @Body() data: any
+  ) {
+    return await this.contentService.updateVideoModerationStatus(data)
   }
 
   @Post('/create')
@@ -45,10 +102,21 @@ export class ContentController {
       throw new BadRequestException
     }
 
-    const video = await this.videoService.upload(id, data.video)
+    const video = await this.videoService.upload(id, data.video, data.songId)
 
     return await this.contentService.uploadContent(id, data, video.id)
   }
+
+  @Public()
+  @Post('/create/song')
+  async createSong(
+    @Body() data: any
+  ) {
+    return await this.contentService.uploadSong(data)
+  }
+
+
+  // TODO: VOTES --------------------------------------------------------
 
   @Post('/toggle-like')
   async toggleLike(
@@ -60,5 +128,17 @@ export class ContentController {
     }
 
     return await this.videoService.toggleLike(id.toString(), data.videoId)
+  }
+
+  @Post('/vote')
+  async voteForVideo(
+    @CurrentUser() id: number,
+    @Body() data: any
+  ) {
+    if (!id) {
+      throw new BadRequestException
+    }
+
+    return await this.videoService.vote(id.toString(), data.videoId)
   }
 }

@@ -48,7 +48,6 @@ export class AuthService {
 
     const user = await this.usersService.confirmPhone(id)
 
-
     const [accessToken, refreshToken] =
       await this.jwtService.generateAuthTokens(user, domain)
     return { user, accessToken, refreshToken }
@@ -73,7 +72,8 @@ export class AuthService {
     user: any,
     domain: string,
   ): Promise<any> {
-    const confirmationCode = uuidv4().toString().substring(0, 6).toUpperCase();
+    const confirmationCode = Math.floor(100000 + Math.random() * 900000).toString() //uuidv4().toString().substring(0, 6).toUpperCase();
+    console.log(confirmationCode, 'new code')
     const confirmationToken = await this.jwtService.generateToken(
       {
         id: user.id,
