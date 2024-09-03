@@ -57,7 +57,7 @@ export class JwtService {
       },
     },
     this.issuer = 'a32d05c3-063b-498c-9fda-48e86f69167a'
-    this.domain = 'localhost:3001'
+    this.domain = 'front.nesttestrn.fun'
   }
 
   private static async generateTokenAsync(

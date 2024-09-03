@@ -26,7 +26,7 @@ export class AuthService {
       })
     }
 
-    const { confirmationToken, confirmationCode } = await this.generateConfirmationToken(user, 'localhost:3001')
+    const { confirmationToken, confirmationCode } = await this.generateConfirmationToken(user, 'front.nesttestrn.fun')
 
     // this.mailerService.sendConfirmationEmail(user, confirmationCode);
     return { confirmationToken, confirmationCode };

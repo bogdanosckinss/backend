@@ -21,7 +21,9 @@ async function bootstrap() {
   app.register(fastifyCsrfProtection, { cookieOpts: { signed: true } });
   app.register(fastifyCors, {
     credentials: true,
-    origin: `http://localhost:3001`,
+    origin: `https://front.nesttestrn.fun`,
+	    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization'
   });
   app.useGlobalPipes(
     new ValidationPipe({
