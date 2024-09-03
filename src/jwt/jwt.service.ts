@@ -20,6 +20,7 @@ import {
 } from './interfaces/refresh-token.interface';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class JwtService {
@@ -28,6 +29,7 @@ export class JwtService {
   private readonly domain: string;
 
   constructor(
+    private configService: ConfigService
   ) {
     const publicKey = readFileSync(
       join(__dirname, '..', '..', 'keys/public.key'),
@@ -57,7 +59,7 @@ export class JwtService {
       },
     },
     this.issuer = 'a32d05c3-063b-498c-9fda-48e86f69167a'
-    this.domain = 'localhost:3001'
+    this.domain = this.configService.get('frontendDomain')
   }
 
   private static async generateTokenAsync(

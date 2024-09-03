@@ -1,18 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser'
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import fastifyCookie from '@fastify/cookie';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyCsrfProtection from '@fastify/csrf-protection';
 import fastifyCors from '@fastify/cors';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter()
   )
+
+  const configService = app.get(ConfigService)
 
   app.register(fastifyCookie, {
     secret: 'random_string'
@@ -21,33 +23,15 @@ async function bootstrap() {
   app.register(fastifyCsrfProtection, { cookieOpts: { signed: true } });
   app.register(fastifyCors, {
     credentials: true,
-    origin: `http://localhost:3001`,
+    origin: configService.get('frontendUrl'),
+    methods: 'GET,POST,PUT,DELETE,OPTIONS'
   });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
     }),
   );
-  // const app = await NestFactory.create<NestFastifyApplication>(
-  //   AppModule,
-  //   new FastifyAdapter({ maxParamLength: 1000 }),
-  // );
 
-  //  app.enableCors({
-  //    credentials: true,
-  //    origin: 'http:/localhost:3001'
-  //  })
-  // app.use(cookieParser('random_string'))
-
-  // app.register(fastifyCookie, {
-  //   secret: 'random_string',
-  // });
-  // app.register(fastifyHelmet);
-  // app.register(fastifyCsrfProtection, { cookieOpts: { signed: true } });
-  // app.register(fastifyCors, {
-  //   credentials: true,
-  //   origin: `http://localhost:3000`,
-  // });
   await app.listen(3000);
 }
 bootstrap();

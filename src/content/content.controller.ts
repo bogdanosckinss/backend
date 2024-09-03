@@ -141,4 +141,12 @@ export class ContentController {
 
     return await this.videoService.vote(id.toString(), data.videoId)
   }
+
+  @Public()
+  @Get('/download/songs')
+  async download(
+  ) {
+    return await this.contentService.findFirstSongById(1)
+  }
+
 }

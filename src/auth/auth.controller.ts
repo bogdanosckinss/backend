@@ -15,11 +15,13 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { isNull, isUndefined } from '../common/utils/validation.util';
 import { Origin } from './decorators/origin.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
+import process from 'node:process';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   @Public()
@@ -62,7 +64,6 @@ export class AuthController {
     @Res() res: FastifyReply,
   ): Promise<any> {
     const token = this.refreshTokenFromReq(req)
-    console.log('token')
     const result = await this.authService.refreshTokenAccess(
       token,
       req.headers.origin,

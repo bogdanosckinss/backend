@@ -6,13 +6,16 @@ import { UsersService } from '../users/users.service';
 import { v4 as uuidv4 } from 'uuid';
 import { compare, hash } from 'bcrypt';
 import { TokenTypeEnum } from '../jwt/enums/token-type.enum';
+import * as process from 'node:process';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private dbService: DbService,
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private configService: ConfigService
   ) {}
 
   async create(props: CodeDTO): Promise<any> {
@@ -26,7 +29,7 @@ export class AuthService {
       })
     }
 
-    const { confirmationToken, confirmationCode } = await this.generateConfirmationToken(user, 'localhost:3001')
+    const { confirmationToken, confirmationCode } = await this.generateConfirmationToken(user, this.configService.get('frontendDomain'))
 
     // this.mailerService.sendConfirmationEmail(user, confirmationCode);
     return { confirmationToken, confirmationCode };

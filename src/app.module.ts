@@ -8,12 +8,18 @@ import { ContentModule } from './content/content.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { JwtService } from './jwt/jwt.service';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
     DbModule,
     AuthModule,
-    ContentModule
+    ContentModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration]
+    })
   ],
   controllers: [AppController],
   providers: [

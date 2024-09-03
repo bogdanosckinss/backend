@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, StreamableFile } from '@nestjs/common';
 import { DbService } from '../db/db.service'
 import { ProfileDTO } from './dto/profile-d-t-o';
 import { contains } from 'class-validator';
+import { createReadStream } from 'fs';
 
 @Injectable()
 export class ContentService {
@@ -126,16 +127,18 @@ export class ContentService {
       where: {
           OR: [
             {
-              users: {
-                name: {
-                  contains: query
+              song: {
+                title: {
+                  contains: query,
+                  mode: 'insensitive'
                 }
               }
             },
             {
-              song: {
-                title: {
-                  contains: query
+              users: {
+                name: {
+                  contains: query,
+                  mode: 'insensitive'
                 }
               }
             }
@@ -196,6 +199,9 @@ export class ContentService {
   }
 
   async findFirstSongById(id: number): Promise<any> {
+    const song = "https://firebasestorage.googleapis.com/v0/b/testing-98cd8.appspot.com/o/images%2F1725226282184?alt=media&token=5c0ccc8f-f8d1-4c65-8385-e21b695de6cb"
+    const readStream = createReadStream(song)
+    return new StreamableFile(readStream)
     return this.dbService.song.findFirst({
       where: {
         id: id
