@@ -135,8 +135,24 @@ export class ContentService {
               }
             },
             {
+              song: {
+                author_name: {
+                  contains: query,
+                  mode: 'insensitive'
+                }
+              }
+            },
+            {
               users: {
                 name: {
+                  contains: query,
+                  mode: 'insensitive'
+                }
+              }
+            },
+            {
+              users: {
+                lastname: {
                   contains: query,
                   mode: 'insensitive'
                 }
