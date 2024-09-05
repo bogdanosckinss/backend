@@ -41,7 +41,11 @@ export class UsersService {
         id: parseInt(id),
       },
       include: {
-        videos: true
+        videos: {
+          include: {
+            song: true
+          }
+        },
       }
     })
   }
