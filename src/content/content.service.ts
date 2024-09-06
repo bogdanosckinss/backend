@@ -121,6 +121,7 @@ export class ContentService {
   }
 
   async findManyVideosByUsername(skip: string, query: string): Promise<any> {
+    console.log(query.replaceAll(' ', ' | ') + ' | ' + (query.split(' ').reverse().join(' ')).replaceAll(' ', ' | '))
     return this.dbService.video.findMany({
       skip: parseInt(skip),
       take: 10,
@@ -136,27 +137,36 @@ export class ContentService {
             },
             {
               song: {
-                author_name: {
-                  contains: query,
-                  mode: 'insensitive'
+                title: {
+                  in: [...query.split(' '), ...query.toLowerCase().split(' ')]
                 }
               }
             },
             {
-              users: {
-                name: {
-                  contains: query,
-                  mode: 'insensitive'
+              OR: [
+                {
+                  users: {
+                    lastname: {
+                      in: [...query.split(' '), ...query.toLowerCase().split(' ')],
+                    }
+                  }
+                },
+                {
+                  users: {
+                    name: {
+                      in: [...query.split(' '), ...query.toLowerCase().split(' ')],
+                    }
+                  }
+                },
+                {
+                  users: {
+                    lastname: {
+                      contains: query.replaceAll(' ', ' | ') + ' | ' + (query.split(' ').reverse().join(' ')).replaceAll(' ', ' | '),
+                      mode: 'insensitive'
+                    }
+                  }
                 }
-              }
-            },
-            {
-              users: {
-                lastname: {
-                  contains: query,
-                  mode: 'insensitive'
-                }
-              }
+              ]
             }
           ],
         under_moderation: false,

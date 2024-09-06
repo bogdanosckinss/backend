@@ -1,4 +1,15 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Query, Res, StreamableFile } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Res,
+  StreamableFile,
+} from '@nestjs/common';
 import { ContentService } from './content.service'
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { VideoService } from '../video/video.service';
@@ -20,6 +31,17 @@ export class ContentController {
     @Param('id') id
   ) {
     return await this.contentService.getContent(id ?? 0) // TODO: remove
+  }
+
+  @Delete('/video')
+  async delete(
+    @CurrentUser() id: string
+  ) {
+    if (!id) {
+      throw new BadRequestException
+    }
+
+    return await this.videoService.deleteByUserId(id)
   }
 
   @Public()

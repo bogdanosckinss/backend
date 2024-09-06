@@ -6,10 +6,12 @@ import { DbService } from '../db/db.service'
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '../jwt/jwt.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MailerService } from '../mailer/mailer.service';
+import { MailerModule } from '../mailer/mailer.module';
 
 @Module({
-  imports: [DbModule, UsersModule, JwtModule, ConfigModule],
+  imports: [DbModule, UsersModule, JwtModule, ConfigModule, MailerModule],
   controllers: [AuthController],
-  providers: [AuthService, DbService, ConfigService],
+  providers: [AuthService, DbService, ConfigService, MailerService],
 })
 export class AuthModule {}

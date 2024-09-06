@@ -75,6 +75,16 @@ export class VideoService {
     })
   }
 
+  async deleteByUserId(userId: string): Promise<any> {
+    return this.dbService.video.deleteMany({
+      where: {
+        users: {
+          id: parseInt(userId)
+        }
+      }
+    })
+  }
+
   async findOneByUserId(userId: string): Promise<any> {
     return this.dbService.video.findFirst({
       where: {
