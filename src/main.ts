@@ -23,7 +23,7 @@ async function bootstrap() {
   app.register(fastifyCsrfProtection, { cookieOpts: { signed: true } });
   app.register(fastifyCors, {
     credentials: true,
-    origin: configService.get('frontendUrl'),
+    origin: [configService.get('frontendUrl'), 'https://like.detmir.ru'],
     methods: 'GET,POST,PUT,DELETE,OPTIONS'
   });
   app.useGlobalPipes(
