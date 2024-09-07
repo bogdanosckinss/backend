@@ -99,6 +99,8 @@ export class AuthController {
     return res
       .cookie('rf', refreshToken, {
         secure: false,
+        httpOnly: true,
+        sameSite: 'none',
         signed: true,
         path: '/',
         expires: new Date(Date.now() + 60000 * 5000),
