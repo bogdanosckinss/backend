@@ -88,7 +88,7 @@ export class AuthController {
     if (!valid) {
       throw new UnauthorizedException();
     }
-  console.log('valid')
+
     return value;
   }
 
@@ -99,7 +99,6 @@ export class AuthController {
     return res
       .cookie('rf', refreshToken, {
         secure: false,
-        httpOnly: true,
         signed: true,
         path: '/',
         expires: new Date(Date.now() + 60000 * 5000),
