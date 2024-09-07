@@ -98,7 +98,7 @@ export class AuthController {
   ): any {
     return res
       .cookie('rf', refreshToken, {
-        secure: false,
+        secure: true,
         httpOnly: true,
         sameSite: 'none',
         signed: true,
