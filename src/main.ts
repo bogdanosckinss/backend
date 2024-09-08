@@ -7,6 +7,7 @@ import fastifyCsrfProtection from '@fastify/csrf-protection';
 import fastifyCors from '@fastify/cors';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import fastifyMultipart from '@fastify/multipart';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -16,6 +17,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService)
 
+  app.register(fastifyMultipart)
   app.register(fastifyCookie, {
     secret: 'random_string'
   });
@@ -23,7 +25,7 @@ async function bootstrap() {
   app.register(fastifyCsrfProtection, { cookieOpts: { signed: true } });
   app.register(fastifyCors, {
     credentials: true,
-    origin: configService.get('frontendUrl'),
+    origin: [configService.get('frontendUrl'), 'http://localhost:5173'],
     methods: 'GET,POST,PUT,DELETE,OPTIONS'
   });
   app.useGlobalPipes(

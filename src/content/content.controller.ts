@@ -2,13 +2,13 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
+  Delete, FileTypeValidator,
+  Get, MaxFileSizeValidator,
+  Param, ParseFilePipe,
+  Post, Put,
+  Query, Req,
   Res,
-  StreamableFile,
+  StreamableFile, UploadedFile, UseInterceptors,
 } from '@nestjs/common';
 import { ContentService } from './content.service'
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -17,6 +17,8 @@ import { Public } from '../auth/decorators/public.decorator';
 import { FastifyReply } from 'fastify';
 import {createReadStream} from 'fs'
 import { join } from 'path';
+import EasyYandexS3 from 'easy-yandex-s3';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('content')
 export class ContentController {
@@ -42,6 +44,30 @@ export class ContentController {
     }
 
     return await this.videoService.deleteByUserId(id)
+  }
+
+  @Public()
+  @Post('/upload/file')
+  async uploadFile(
+    @Req() req: any,
+    // @UploadedFile() file: Express.Multer.File
+  ) {
+    const data = await req.file()
+    console.log(data)
+    return
+    let s3 = new EasyYandexS3({
+      auth: {
+        accessKeyId: 'YCAJEZ4ACpKZcbhV_iv3jZGPh',
+        secretAccessKey: 'YCMDP5nIbYuKD06KdZiZQ6sGLxs4WkLsVM2mem_v',
+      },
+      Bucket: 'like2024',
+      debug: true,
+    })
+
+    const upload = await s3.Upload({
+      //buffer: '',
+      path: '/Users/bohdanoskin/Documents/Other/extreme/domains/backend/src/content/photo.jpg'
+    }, '/images/')
   }
 
   @Public()
