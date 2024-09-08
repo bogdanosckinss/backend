@@ -19,10 +19,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService)
   app.register(fastifyMultipart, {
     throwFileSizeLimit: false,
-    limits: {
-      files: 1,
-      fileSize: 100000,
-    },
   })
   app.register(fastifyCookie, {
     secret: 'random_string'

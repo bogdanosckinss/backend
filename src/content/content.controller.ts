@@ -19,10 +19,12 @@ import {createReadStream} from 'fs'
 import { join } from 'path';
 import EasyYandexS3 from 'easy-yandex-s3';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('content')
 export class ContentController {
   constructor(
+    private config: ConfigService,
     private contentService: ContentService,
     private videoService: VideoService
   ) {}
@@ -53,12 +55,11 @@ export class ContentController {
     @Res() res: any
   ) {
     const data = await req.file()
-    console.log(data)
     const buffer = await data.toBuffer()
     let s3 = new EasyYandexS3({
       auth: {
-        accessKeyId: 'YCAJEZ4ACpKZcbhV_iv3jZGPh',
-        secretAccessKey: 'YCMDP5nIbYuKD06KdZiZQ6sGLxs4WkLsVM2mem_v',
+        accessKeyId: this.config.get('YCAJEZ4ACpKZcbhV_iv3jZGPh'),
+        secretAccessKey: this.config.get('YCMDP5nIbYuKD06KdZiZQ6sGLxs4WkLsVM2mem_v'),
       },
       Bucket: 'like2024',
       debug: true,
@@ -70,7 +71,6 @@ export class ContentController {
 
       return res.send({
         link: uploadedFile['Location'],
-        buffer: buffer
       })
   }
 
