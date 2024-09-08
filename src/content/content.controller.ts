@@ -53,8 +53,8 @@ export class ContentController {
     // @UploadedFile() file: Express.Multer.File
   ) {
     const data = await req.file()
-    console.log(data)
-    return {}
+    const buffer = await data.toBuffer()
+    console.log(buffer)
     let s3 = new EasyYandexS3({
       auth: {
         accessKeyId: 'YCAJEZ4ACpKZcbhV_iv3jZGPh',
@@ -65,8 +65,8 @@ export class ContentController {
     })
 
     const upload = await s3.Upload({
-      //buffer: '',
-      path: '/Users/bohdanoskin/Documents/Other/extreme/domains/backend/src/content/photo.jpg'
+      buffer: buffer,
+      //path: '/Users/bohdanoskin/Documents/Other/extreme/domains/backend/src/content/photo.jpg'
     }, '/images/')
   }
 
