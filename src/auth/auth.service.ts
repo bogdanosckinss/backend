@@ -38,7 +38,7 @@ export class AuthService {
     axios.post('https://api.notisend.ru/v1/email/messages', {
         "from_email":"ceo@kidsproject.team",
         "from_name": "Звезды будущего",
-        "to": "yemeb93944@janfab.com",
+        "to": email,
         "subject": "Код для подтверждения аккаунта",
         "text": "Ваш код для подтверждения аккаунта на сайте Звезды будущего",
         "html": "<h1>Ваш код для подтверждения аккаунта: "  + confirmationCode + "</h1>"
