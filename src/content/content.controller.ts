@@ -54,7 +54,7 @@ export class ContentController {
   ) {
     const data = await req.file()
     console.log(data)
-    return
+    return {}
     let s3 = new EasyYandexS3({
       auth: {
         accessKeyId: 'YCAJEZ4ACpKZcbhV_iv3jZGPh',
