@@ -151,7 +151,7 @@ export class ContentController {
     @Body() data: any
   ) {
     if (!id) {
-      throw new BadRequestException
+      return {message: 'something happened'}
     }
 
     return await this.videoService.toggleLike(id.toString(), data.videoId)
