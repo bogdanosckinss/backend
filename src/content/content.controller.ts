@@ -49,32 +49,6 @@ export class ContentController {
   }
 
   @Public()
-  @Post('/upload/file')
-  async uploadFile(
-    @Req() req: any,
-    @Res() res: any
-  ) {
-    const data = await req.file()
-    const buffer = await data.toBuffer()
-    let s3 = new EasyYandexS3({
-      auth: {
-        accessKeyId: this.config.get('accessKeyId'),
-        secretAccessKey: this.config.get('accessKeySecret'),
-      },
-      Bucket: 'like2024',
-      debug: true,
-    })
-
-    const uploadedFile = await s3.Upload({
-      buffer: buffer,
-    }, '/images/')
-
-      return res.send({
-        link: uploadedFile['Location'],
-      })
-  }
-
-  @Public()
   @Get('/search/videos')
   async findManyByQuery(
     @Query('skip') skip,
