@@ -58,8 +58,8 @@ export class ContentController {
     const buffer = await data.toBuffer()
     let s3 = new EasyYandexS3({
       auth: {
-        accessKeyId: this.config.get('YCAJEZ4ACpKZcbhV_iv3jZGPh'),
-        secretAccessKey: this.config.get('YCMDP5nIbYuKD06KdZiZQ6sGLxs4WkLsVM2mem_v'),
+        accessKeyId: this.config.get('accessKeyId'),
+        secretAccessKey: this.config.get('accessKeySecret'),
       },
       Bucket: 'like2024',
       debug: true,
