@@ -51,10 +51,11 @@ export class ContentController {
   @Public()
   @Get('/search/videos')
   async findManyByQuery(
+    @CurrentUser() id: number,
     @Query('skip') skip,
     @Query('query') query,
   ) {
-    return await this.contentService.findManyVideosByUsername(skip ?? 0, query)
+    return await this.contentService.findManyVideosByUsername(skip ?? 0, query, id ?? 0)
   }
 
   @Public()

@@ -82,4 +82,6 @@ model Song {
   created_at          DateTime?      @default(now())
   updated_at          DateTime?      @updatedAt
   videos              Video[]
+
+    @@map("song")
 }

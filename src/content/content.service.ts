@@ -120,7 +120,40 @@ export class ContentService {
     })
   }
 
-  async findManyVideosByUsername(skip: string, query: string): Promise<any> {
+  async findManyVideosByUsername(skip: string, query: string, userId: number): Promise<any> {
+    const videos = await this.dbService.$queryRaw`
+    Select *, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id AND videoLike.user_id = ${userId}) as is_liked_by_me, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id) as video_likes from videos as video
+    JOIN users as userc on video.user_id = userc.id
+    JOIN song as ss on ss.id = video.song_id
+    WHERE video.allowed AND (LOWER(userc.lastname) LIKE LOWER(${'%' + query + '%'}) OR LOWER(userc.name) LIKE LOWER(${'%' + query + '%'}) OR LOWER(ss.title) LIKE LOWER(${'%' + query + '%'}))
+    ORDER BY (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id) DESC
+    LIMIT 10 OFFSET ${parseInt(skip)}
+    `
+
+    if (!Array.isArray(videos)) {
+      return []
+    }
+
+    return videos.map(video => {
+      return {
+        ...video,
+        users: {
+          name: video.name,
+          lastname: video.lastname,
+          city: video.city,
+          age: video.age,
+          email: video.email,
+        },
+        song: {
+          author_name: video.author_name,
+          title: video.title
+        },
+        video_likes: '',
+        is_liked_by_me: parseInt(video.is_liked_by_me) > 0,
+        videoLikes: parseInt(video.video_likes)
+      }
+    })
+
     return this.dbService.video.findMany({
       skip: parseInt(skip),
       take: 10,
@@ -168,6 +201,20 @@ export class ContentService {
                   users: {
                     lastname: {
                       contains: query,
+                    }
+                  }
+                },
+                {
+                  users: {
+                    name: {
+                      contains: query.toLowerCase(),
+                    }
+                  }
+                },
+                {
+                  users: {
+                    lastname: {
+                      contains: query.toLowerCase(),
                     }
                   }
                 },
