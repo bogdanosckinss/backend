@@ -9,7 +9,7 @@ export class UsersService {
   async create(data: any): Promise<any> {
     return this.dbService.user.create({
       data: {
-        phone_number: data.phone_number,
+        email: data.email,
         name: data.name
       },
     })
@@ -27,10 +27,10 @@ export class UsersService {
     return await this.saveUserConfirmed(userId)
   }
 
-  async findOneByPhone(phone_number: string): Promise<User> {
+  async findOneByEmail(email: string): Promise<User> {
     return this.dbService.user.findFirst({
       where: {
-        phone_number: phone_number,
+        email: email,
       }
     })
   }

@@ -50,11 +50,11 @@ export class ContentController {
   @Post('/upload/file')
   async uploadFile(
     @Req() req: any,
-    // @UploadedFile() file: Express.Multer.File
+    @Res() res: any
   ) {
     const data = await req.file()
+    console.log(data)
     const buffer = await data.toBuffer()
-    console.log(buffer)
     let s3 = new EasyYandexS3({
       auth: {
         accessKeyId: 'YCAJEZ4ACpKZcbhV_iv3jZGPh',
@@ -64,10 +64,14 @@ export class ContentController {
       debug: true,
     })
 
-    const upload = await s3.Upload({
+    const uploadedFile = await s3.Upload({
       buffer: buffer,
-      //path: '/Users/bohdanoskin/Documents/Other/extreme/domains/backend/src/content/photo.jpg'
     }, '/images/')
+
+      return res.send({
+        link: uploadedFile['Location'],
+        buffer: buffer
+      })
   }
 
   @Public()

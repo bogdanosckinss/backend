@@ -22,7 +22,7 @@ model User {
   image               String?
   city                String?
   social_media_link   String?
-  phone_number        String
+  phone_number        String?
   confirmed           Boolean        @default(false)
   created_at          DateTime?      @default(now())
   updated_at          DateTime?      @updatedAt

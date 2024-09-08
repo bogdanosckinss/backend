@@ -8,6 +8,7 @@ import fastifyCors from '@fastify/cors';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import fastifyMultipart from '@fastify/multipart';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -16,8 +17,13 @@ async function bootstrap() {
   )
 
   const configService = app.get(ConfigService)
-
-  app.register(fastifyMultipart)
+  app.register(fastifyMultipart, {
+    throwFileSizeLimit: false,
+    limits: {
+      files: 1,
+      fileSize: 100000,
+    },
+  })
   app.register(fastifyCookie, {
     secret: 'random_string'
   });
@@ -28,11 +34,11 @@ async function bootstrap() {
     origin: [configService.get('frontendUrl'), 'http://localhost:5173'],
     methods: 'GET,POST,PUT,DELETE,OPTIONS'
   });
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-    }),
-  );
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     transform: true,
+  //   }),
+  // );
 
   await app.listen(3000);
 }
