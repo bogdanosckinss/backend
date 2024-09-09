@@ -146,7 +146,8 @@ export class ContentService {
         },
         song: {
           author_name: video.author_name,
-          title: video.title
+          title: video.title,
+          image_link: video.image_link
         },
         video_likes: '',
         is_liked_by_me: parseInt(video.is_liked_by_me) > 0,
