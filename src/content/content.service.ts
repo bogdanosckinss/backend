@@ -157,105 +157,105 @@ export class ContentService {
       }
     })
 
-    return this.dbService.video.findMany({
-      skip: parseInt(skip),
-      take: 10,
-      where: {
-          OR: [
-            {
-              song: {
-                title: {
-                  contains: query,
-                  mode: 'insensitive'
-                }
-              }
-            },
-            {
-              song: {
-                title: {
-                  in: [...query.split(' '), ...query.toLowerCase().split(' ')]
-                }
-              }
-            },
-            {
-              OR: [
-                {
-                  users: {
-                    lastname: {
-                      in: [...query.split(' '), ...query.toLowerCase().split(' ')],
-                    }
-                  }
-                },
-                {
-                  users: {
-                    name: {
-                      in: [...query.split(' '), ...query.toLowerCase().split(' ')],
-                    }
-                  }
-                },
-                {
-                  users: {
-                    name: {
-                      contains: query,
-                    }
-                  }
-                },
-                {
-                  users: {
-                    lastname: {
-                      contains: query,
-                    }
-                  }
-                },
-                {
-                  users: {
-                    name: {
-                      contains: query.toLowerCase(),
-                    }
-                  }
-                },
-                {
-                  users: {
-                    lastname: {
-                      contains: query.toLowerCase(),
-                    }
-                  }
-                },
-                {
-                  users: {
-                    lastname: {
-                      contains: query.replaceAll(' ', ' | ') + ' | ' + (query.split(' ').reverse().join(' ')).replaceAll(' ', ' | '),
-                      mode: 'insensitive'
-                    }
-                  }
-                }
-              ]
-            }
-          ],
-        under_moderation: false,
-        allowed: true
-      },
-      orderBy: {
-        videoLikes: {
-          _count: 'desc'
-        }
-      },
-      include: {
-        users: true,
-        song: true,
-        videoLikes: {
-          select: {
-            id: true,
-            video_id: true,
-            user: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        }
-      }
-    })
+    // return this.dbService.video.findMany({
+    //   skip: parseInt(skip),
+    //   take: 10,
+    //   where: {
+    //       OR: [
+    //         {
+    //           song: {
+    //             title: {
+    //               contains: query,
+    //               mode: 'insensitive'
+    //             }
+    //           }
+    //         },
+    //         {
+    //           song: {
+    //             title: {
+    //               in: [...query.split(' '), ...query.toLowerCase().split(' ')]
+    //             }
+    //           }
+    //         },
+    //         {
+    //           OR: [
+    //             {
+    //               users: {
+    //                 lastname: {
+    //                   in: [...query.split(' '), ...query.toLowerCase().split(' ')],
+    //                 }
+    //               }
+    //             },
+    //             {
+    //               users: {
+    //                 name: {
+    //                   in: [...query.split(' '), ...query.toLowerCase().split(' ')],
+    //                 }
+    //               }
+    //             },
+    //             {
+    //               users: {
+    //                 name: {
+    //                   contains: query,
+    //                 }
+    //               }
+    //             },
+    //             {
+    //               users: {
+    //                 lastname: {
+    //                   contains: query,
+    //                 }
+    //               }
+    //             },
+    //             {
+    //               users: {
+    //                 name: {
+    //                   contains: query.toLowerCase(),
+    //                 }
+    //               }
+    //             },
+    //             {
+    //               users: {
+    //                 lastname: {
+    //                   contains: query.toLowerCase(),
+    //                 }
+    //               }
+    //             },
+    //             {
+    //               users: {
+    //                 lastname: {
+    //                   contains: query.replaceAll(' ', ' | ') + ' | ' + (query.split(' ').reverse().join(' ')).replaceAll(' ', ' | '),
+    //                   mode: 'insensitive'
+    //                 }
+    //               }
+    //             }
+    //           ]
+    //         }
+    //       ],
+    //     under_moderation: false,
+    //     allowed: true
+    //   },
+    //   orderBy: {
+    //     videoLikes: {
+    //       _count: 'desc'
+    //     }
+    //   },
+    //   include: {
+    //     users: true,
+    //     song: true,
+    //     videoLikes: {
+    //       select: {
+    //         id: true,
+    //         video_id: true,
+    //         user: {
+    //           select: {
+    //             id: true,
+    //           },
+    //         },
+    //       },
+    //     }
+    //   }
+    // })
   }
 
   async findManyUsersByName(name: string): Promise<any> {
