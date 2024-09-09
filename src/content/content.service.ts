@@ -56,68 +56,70 @@ export class ContentService {
   }
 
   async getVideosToModerate(skip: number): Promise<any> {
-    return this.dbService.video.findMany({
-      skip: skip,
-      take: 30,
-      where: {
-        under_moderation: true
-      },
-      orderBy: {
-        videoLikes: {
-          _count: 'desc'
-        }
-      },
-      include: {
-        users: true,
-        song: true,
-        videoLikes: {
-          select: {
-            id: true,
-            video_id: true,
-            user: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        }
-      }
-    })
+    return {}
+    // return this.dbService.video.findMany({
+    //   skip: skip,
+    //   take: 30,
+    //   where: {
+    //     under_moderation: true
+    //   },
+    //   orderBy: {
+    //     videoLikes: {
+    //       _count: 'desc'
+    //     }
+    //   },
+    //   include: {
+    //     users: true,
+    //     song: true,
+    //     videoLikes: {
+    //       select: {
+    //         id: true,
+    //         video_id: true,
+    //         user: {
+    //           select: {
+    //             id: true,
+    //           },
+    //         },
+    //       },
+    //     }
+    //   }
+    // })
   }
 
   async getContent(id: number): Promise<any> {
-    return this.dbService.video.findMany({
-      //take: 3, // TODO: remove
-      where: {
-        id: {
-          not: {
-            lt: 6
-          }
-        },
-        under_moderation: false,
-        allowed: true
-      },
-      orderBy: {
-        videoLikes: {
-          _count: 'desc'
-        }
-      },
-      include: {
-        users: true,
-        song: true,
-        videoLikes: {
-          select: {
-            id: true,
-            video_id: true,
-            user: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        }
-      }
-    })
+    return {};
+    // return this.dbService.video.findMany({
+    //   //take: 3, // TODO: remove
+    //   where: {
+    //     id: {
+    //       not: {
+    //         lt: 6
+    //       }
+    //     },
+    //     under_moderation: false,
+    //     allowed: true
+    //   },
+    //   orderBy: {
+    //     videoLikes: {
+    //       _count: 'desc'
+    //     }
+    //   },
+    //   include: {
+    //     users: true,
+    //     song: true,
+    //     videoLikes: {
+    //       select: {
+    //         id: true,
+    //         video_id: true,
+    //         user: {
+    //           select: {
+    //             id: true,
+    //           },
+    //         },
+    //       },
+    //     }
+    //   }
+    // })
   }
 
   async findManyVideosByUsername(skip: string, query: string, userId: number): Promise<any> {
