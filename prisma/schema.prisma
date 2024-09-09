@@ -44,7 +44,6 @@ model Video {
   updated_at          DateTime?      @updatedAt
   users               User           @relation(fields: [user_id], references: [id])
   song                Song           @relation(fields: [song_id], references: [id])
-  videoLikes          VideoLikes[]
   videoVotes          VideoVotes[]
 
   @@map("videos")
