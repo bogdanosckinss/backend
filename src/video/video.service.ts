@@ -16,63 +16,65 @@ export class VideoService {
   }
 
   async findManyByName(name: string): Promise<any> {
-    return this.dbService.video.findMany({
-      take: 500,
-      orderBy: {
-        videoLikes: {
-          _count: 'desc'
-        }
-      },
-      where: {
-        users: {
-          name: {
-            contains: name
-          }
-        },
-        under_moderation: false,
-        allowed: true
-      },
-      include: {
-        users: true,
-        song: true,
-        videoLikes: {
-          select: {
-            id: true,
-            video_id: true,
-            user: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        }
-      }
-    })
+    return {}
+    // return this.dbService.video.findMany({
+    //   take: 500,
+    //   orderBy: {
+    //     videoLikes: {
+    //       _count: 'desc'
+    //     }
+    //   },
+    //   where: {
+    //     users: {
+    //       name: {
+    //         contains: name
+    //       }
+    //     },
+    //     under_moderation: false,
+    //     allowed: true
+    //   },
+    //   include: {
+    //     users: true,
+    //     song: true,
+    //     videoLikes: {
+    //       select: {
+    //         id: true,
+    //         video_id: true,
+    //         user: {
+    //           select: {
+    //             id: true,
+    //           },
+    //         },
+    //       },
+    //     }
+    //   }
+    // })
   }
 
   async findOneById(videoId: string): Promise<any> {
-    return this.dbService.video.findMany({
-      where: {
-        id: parseInt(videoId),
-        under_moderation: false,
-        allowed: true
-      },
-      include: {
-        users: true,
-        song: true,
-        videoLikes: {
-          select: {
-            id: true,
-            video_id: true,
-            user: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        }
-      }
-    })
+    return {}
+    // return this.dbService.video.findMany({
+    //   where: {
+    //     id: parseInt(videoId),
+    //     under_moderation: false,
+    //     allowed: true
+    //   },
+    //   include: {
+    //     users: true,
+    //     song: true,
+    //     videoLikes: {
+    //       select: {
+    //         id: true,
+    //         video_id: true,
+    //         user: {
+    //           select: {
+    //             id: true,
+    //           },
+    //         },
+    //       },
+    //     }
+    //   }
+    // })
   }
 
   async deleteByUserId(userId: string): Promise<any> {
@@ -86,30 +88,31 @@ export class VideoService {
   }
 
   async findOneByUserId(userId: string): Promise<any> {
-    return this.dbService.video.findFirst({
-      where: {
-        users: {
-          id: parseInt(userId)
-        },
-        under_moderation: false,
-        allowed: true
-      },
-      include: {
-        users: true,
-        song: true,
-        videoLikes: {
-          select: {
-            id: true,
-            video_id: true,
-            user: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        }
-      }
-    })
+    return {}
+    // return this.dbService.video.findFirst({
+    //   where: {
+    //     users: {
+    //       id: parseInt(userId)
+    //     },
+    //     under_moderation: false,
+    //     allowed: true
+    //   },
+    //   include: {
+    //     users: true,
+    //     song: true,
+    //     videoLikes: {
+    //       select: {
+    //         id: true,
+    //         video_id: true,
+    //         user: {
+    //           select: {
+    //             id: true,
+    //           },
+    //         },
+    //       },
+    //     }
+    //   }
+    // })
   }
 
 
@@ -146,6 +149,19 @@ export class VideoService {
     }
 
     if (!like) {
+      // return this.dbService.video.update({
+      //   where: {
+      //     id: parseInt(videoId)
+      //   },
+      //   data: {
+      //     videoLikes: {
+      //       connect: {
+      //         video_id: parseInt(videoId),
+      //         user_id: parseInt(userId)
+      //       }
+      //     }
+      //   }
+      // })
       return this.dbService.videoLikes.create({
         data: {
           video_id: parseInt(videoId),
