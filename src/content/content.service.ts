@@ -55,35 +55,40 @@ export class ContentService {
     return this.dbService.song.findMany()
   }
 
-  async getVideosToModerate(skip: number): Promise<any> {
-    return {}
-    // return this.dbService.video.findMany({
-    //   skip: skip,
-    //   take: 30,
-    //   where: {
-    //     under_moderation: true
-    //   },
-    //   orderBy: {
-    //     videoLikes: {
-    //       _count: 'desc'
-    //     }
-    //   },
-    //   include: {
-    //     users: true,
-    //     song: true,
-    //     videoLikes: {
-    //       select: {
-    //         id: true,
-    //         video_id: true,
-    //         user: {
-    //           select: {
-    //             id: true,
-    //           },
-    //         },
-    //       },
-    //     }
-    //   }
-    // })
+  async getVideosToModerate(skip: string): Promise<any> {
+    const videos = await this.dbService.$queryRaw`
+    Select * from videos as video
+    JOIN users as userc on video.user_id = userc.id
+    JOIN song as ss on ss.id = video.song_id
+    WHERE NOT video.allowed
+    ORDER BY video.created_at ASC
+    LIMIT 10 OFFSET ${parseInt(skip)}
+    `
+
+    if (!Array.isArray(videos)) {
+      return []
+    }
+
+    return videos.map(video => {
+      return {
+        ...video,
+        users: {
+          name: video.name,
+          lastname: video.lastname,
+          city: video.city,
+          age: video.age,
+          email: video.email,
+          image: video.image,
+          phone_number: video.phone_number,
+          social_media_link: video.social_media_link
+        },
+        song: {
+          author_name: video.author_name,
+          title: video.title,
+          image_link: video.image_link
+        },
+      }
+    })
   }
 
   async getContent(id: number): Promise<any> {
@@ -124,7 +129,7 @@ export class ContentService {
 
   async findManyVideosByUsername(skip: string, query: string, userId: number): Promise<any> {
     const videos = await this.dbService.$queryRaw`
-    Select *, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id AND videoLike.user_id = ${userId}) as is_liked_by_me, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id) as video_likes from videos as video
+    Select *, video.id as video_d, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id AND videoLike.user_id = ${userId}) as is_liked_by_me, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id) as video_likes from videos as video
     JOIN users as userc on video.user_id = userc.id
     JOIN song as ss on ss.id = video.song_id
     WHERE video.allowed AND (LOWER(CONCAT(userc.lastname, ' ', userc.name)) LIKE LOWER(${'%' + query + '%'}) OR LOWER(CONCAT(userc.name, ' ', userc.lastname)) LIKE LOWER(${'%' + query + '%'}) OR LOWER(userc.name) LIKE LOWER(${'%' + query + '%'}) OR LOWER(ss.title) LIKE LOWER(${'%' + query + '%'}))
@@ -139,12 +144,14 @@ export class ContentService {
     return videos.map(video => {
       return {
         ...video,
+        id: video.video_d,
         users: {
           name: video.name,
           lastname: video.lastname,
           city: video.city,
           age: video.age,
           email: video.email,
+          image: video.image
         },
         song: {
           author_name: video.author_name,

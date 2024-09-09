@@ -9,7 +9,7 @@ export class UsersService {
   async create(data: any): Promise<any> {
     return this.dbService.user.create({
       data: {
-        email: data.email,
+        phone_number: data.phone_number,
         name: data.name
       },
     })

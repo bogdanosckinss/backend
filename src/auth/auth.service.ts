@@ -54,24 +54,23 @@ export class AuthService {
 
     const trimmedPhone = phone.split('+')[1]
 
-    axios.post('https://api.exolve.ru/messaging/v1/SendSMS', {
-      number: this.configService.get('phoneNumber'),
-      destination: trimmedPhone,
-      text: 'Ваш код для подтверждения входа: ' + confirmationCode
-    },
-      {
-        headers: {
-          Authorization: 'Bearer ' + this.configService.get('phoneAccessToken')
-        }
-      }
-    )
+    if (!this.configService.get('isDev')) {
+      axios.post('https://api.exolve.ru/messaging/v1/SendSMS', {
+          number: '79842698582',
+          destination: trimmedPhone,
+          text: 'Конкурс Талантов «Детский мир» | код для подтверждение: ' + confirmationCode
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + this.configService.get('phoneAccessToken')
+          }
+        })
+    }
+
 
     // this.mailerService.sendConfirmationEmail(user, confirmationCode);
     return { confirmationToken, confirmationCode };
-  }
-
-  public async testEmail() {
-    this.mailerService.sendConfirmationEmail({email: 'bogdanosckinss@gmail.com'}, '1212');
   }
 
   public async confirmPhone(

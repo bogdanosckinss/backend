@@ -5,4 +5,5 @@ export default () => ({
   accessKeySecret: process.env.ACCESS_KEY_SECRET || '',
   phoneAccessToken: process.env.PHONE_ACCESS_TOKEN || '',
   phoneNumber: process.env.PHONE_NUMBER || '',
+  isDev: process.env.ISDEV || false,
 })

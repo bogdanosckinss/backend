@@ -1,10 +1,9 @@
-import { IsNotEmpty, IsNumber } from 'class-validator'
+import { IsNotEmpty } from 'class-validator'
 
 export class CodeDTO {
   @IsNotEmpty()
   name: string
 
-  @IsNumber()
   @IsNotEmpty()
   phone: string
 }

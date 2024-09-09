@@ -63,7 +63,7 @@ export class ContentController {
   async getVideosToModerate(
     @Query('skip') skip
   ) {
-    return await this.contentService.getVideosToModerate(parseInt(skip ?? 0))
+    return await this.contentService.getVideosToModerate(skip ?? 0)
   }
 
   @Public()
