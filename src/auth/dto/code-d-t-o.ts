@@ -6,5 +6,5 @@ export class CodeDTO {
 
   @IsNumber()
   @IsNotEmpty()
-  email: string
+  phone: string
 }

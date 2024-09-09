@@ -22,36 +22,49 @@ export class AuthService {
   ) {}
 
   async create(props: CodeDTO): Promise<any> {
-    const { email, name } = props
-    let user = await this.usersService.findOneByEmail(email)
+    const { phone, name } = props
+    let user = await this.usersService.findOneByPhone(phone)
 
     if (!user) {
       user = await this.usersService.create({
-        email,
+        phone_number: phone,
         name,
       })
     }
 
     const { confirmationToken, confirmationCode } = await this.generateConfirmationToken(user, this.configService.get('frontendDomain'))
 
-    axios.post('https://api.notisend.ru/v1/email/messages', {
-        "from_email":"ceo@kidsproject.team",
-        "from_name": "Звезды будущего",
-        "to": email,
-        "subject": "Код для подтверждения аккаунта",
-        "text": "Ваш код для подтверждения аккаунта на сайте Звезды будущего",
-        "html": "<h1>Ваш код для подтверждения аккаунта: "  + confirmationCode + "</h1>"
-      },
-        {
-          headers: {
-            Authorization: `Bearer a5cd7b86ed8b29bab61d3ab750fdf8b9`
-          }
-        }).then((res) => {
-        console.log('done')
-      }).catch((e) => {
-        console.log(e)
-      })
+    // axios.post('https://api.notisend.ru/v1/email/messages', {
+    //     "from_email":"ceo@kidsproject.team",
+    //     "from_name": "Звезды будущего",
+    //     "to": email,
+    //     "subject": "Код для подтверждения аккаунта",
+    //     "text": "Ваш код для подтверждения аккаунта на сайте Звезды будущего",
+    //     "html": "<h1>Ваш код для подтверждения аккаунта: "  + confirmationCode + "</h1>"
+    //   },
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer a5cd7b86ed8b29bab61d3ab750fdf8b9`
+    //       }
+    //     }).then((res) => {
+    //     console.log('done')
+    //   }).catch((e) => {
+    //     console.log(e)
+    //   })
 
+    const trimmedPhone = phone.split('+')[1]
+
+    axios.post('https://api.exolve.ru/messaging/v1/SendSMS', {
+      number: this.configService.get('phoneNumber'),
+      destination: trimmedPhone,
+      text: 'Ваш код для подтверждения входа: ' + confirmationCode
+    },
+      {
+        headers: {
+          Authorization: 'Bearer ' + this.configService.get('phoneAccessToken')
+        }
+      }
+    )
 
     // this.mailerService.sendConfirmationEmail(user, confirmationCode);
     return { confirmationToken, confirmationCode };
