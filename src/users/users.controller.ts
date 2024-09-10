@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { UsersService } from './users.service'
 import { Public } from '../auth/decorators/public.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -23,6 +23,19 @@ export class UsersController {
     }
 
     return await this.userService.findOneById(id)
+  }
+
+  @Public()
+  @Put('/image')
+  async updateImage(
+    @CurrentUser() id: number,
+    @Body() data: any
+  ) {
+    if (!id) {
+      throw new BadRequestException
+    }
+
+    return await this.userService.updateImage(id, data.image)
   }
 
 

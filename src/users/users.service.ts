@@ -60,4 +60,15 @@ export class UsersService {
       }
     })
   }
+
+  async updateImage(id: number, image: string): Promise<any> {
+    return this.dbService.user.update({
+      where: {
+        id: id
+      },
+      data: {
+        image: image
+      }
+    })
+  }
 }
