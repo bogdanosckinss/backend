@@ -52,6 +52,42 @@ export class VideoService {
   }
 
   async findOneById(videoId: string): Promise<any> {
+    const videos = await this.dbService.$queryRaw`
+    Select *, video.id as video_d from videos as video
+    JOIN users as userc on video.user_id = userc.id
+    JOIN song as ss on ss.id = video.song_id
+    WHERE video.allowed IS TRUE AND video.under_moderation IS FALSE AND video.id = ${parseInt(videoId)}
+    `
+
+    if (!Array.isArray(videos)) {
+      return []
+    }
+
+    if (videos.length == 0) {
+      return {}
+    }
+
+    return videos.map(video => {
+      return {
+        ...video,
+        id: video.video_d,
+        users: {
+          name: video.name,
+          lastname: video.lastname,
+          city: video.city,
+          age: video.age,
+          email: video.email,
+          image: video.image,
+          phone_number: video.phone_number,
+          social_media_link: video.social_media_link
+        },
+        song: {
+          author_name: video.author_name,
+          title: video.title,
+          image_link: video.image_link
+        },
+      }
+    })
     return {}
     // return this.dbService.video.findMany({
     //   where: {
