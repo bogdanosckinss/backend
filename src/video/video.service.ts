@@ -51,9 +51,9 @@ export class VideoService {
     // })
   }
 
-  async findOneById(videoId: string): Promise<any> {
+  async findOneById(videoId: string, userId: number): Promise<any> {
     const videos = await this.dbService.$queryRaw`
-    Select *, video.id as video_d from videos as video
+    Select *, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id AND videoLike.user_id = ${userId}) as is_liked_by_me, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id) as video_likes, video.id as video_d from videos as video
     JOIN users as userc on video.user_id = userc.id
     JOIN song as ss on ss.id = video.song_id
     WHERE video.allowed IS TRUE AND video.under_moderation IS FALSE AND video.id = ${parseInt(videoId)}
@@ -86,6 +86,9 @@ export class VideoService {
           title: video.title,
           image_link: video.image_link
         },
+        video_likes: '',
+        is_liked_by_me: parseInt(video.is_liked_by_me) > 0,
+        videoLikes: parseInt(video.video_likes)
       }
     })
     return {}

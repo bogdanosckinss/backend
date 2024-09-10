@@ -91,9 +91,10 @@ export class ContentController {
   @Public()
   @Get('/video/:id')
   async getVideoById(
+    @CurrentUser() userId: number,
     @Param('id') id
   ) {
-    return await this.videoService.findOneById(id) // TODO: add song ID
+    return await this.videoService.findOneById(id,userId) // TODO: add song ID
   }
 
   @Public()
