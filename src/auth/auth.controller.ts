@@ -42,7 +42,13 @@ export class AuthController {
       throw new BadRequestException
     }
 
-    return res.clearCookie('rf').send()
+    return res.clearCookie('rf', {
+      secure: true,
+      httpOnly: true,
+      sameSite: 'none',
+      signed: true,
+      path: '/',
+    }).send()
   }
 
   @Public()
