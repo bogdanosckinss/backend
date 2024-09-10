@@ -57,10 +57,10 @@ export class ContentService {
 
   async getVideosToModerate(skip: string): Promise<any> {
     const videos = await this.dbService.$queryRaw`
-    Select * from videos as video
+    Select *, video.id as video_d from videos as video
     JOIN users as userc on video.user_id = userc.id
     JOIN song as ss on ss.id = video.song_id
-    WHERE NOT video.allowed
+    WHERE NOT video.allowed AND video.under_moderation IS TRUE
     ORDER BY video.created_at ASC
     LIMIT 10 OFFSET ${parseInt(skip)}
     `
@@ -72,6 +72,7 @@ export class ContentService {
     return videos.map(video => {
       return {
         ...video,
+        id: video.video_d,
         users: {
           name: video.name,
           lastname: video.lastname,
