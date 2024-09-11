@@ -15,6 +15,15 @@ export class UsersService {
     })
   }
 
+  async createViaEmail(data: any): Promise<any> {
+    return this.dbService.user.create({
+      data: {
+        email: data.email,
+        name: data.name
+      },
+    })
+  }
+
   public async confirmPhone(
     userId: number,
   ): Promise<any> {
@@ -31,6 +40,14 @@ export class UsersService {
     return this.dbService.user.findFirst({
       where: {
         phone_number: phone,
+      }
+    })
+  }
+
+  async findOneByEmail(email: string): Promise<User> {
+    return this.dbService.user.findFirst({
+      where: {
+        email: email,
       }
     })
   }

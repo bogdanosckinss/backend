@@ -10,6 +10,7 @@ import * as process from 'node:process';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { MailerService } from '../mailer/mailer.service';
+import { CodeDTOViaEmail } from './dto/code-d-t-o-via-email';
 
 @Injectable()
 export class AuthService {
@@ -33,25 +34,6 @@ export class AuthService {
     }
 
     const { confirmationToken, confirmationCode } = await this.generateConfirmationToken(user, this.configService.get('frontendDomain'))
-
-    // axios.post('https://api.notisend.ru/v1/email/messages', {
-    //     "from_email":"ceo@kidsproject.team",
-    //     "from_name": "Звезды будущего",
-    //     "to": email,
-    //     "subject": "Код для подтверждения аккаунта",
-    //     "text": "Ваш код для подтверждения аккаунта на сайте Звезды будущего",
-    //     "html": "<h1>Ваш код для подтверждения аккаунта: "  + confirmationCode + "</h1>"
-    //   },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer a5cd7b86ed8b29bab61d3ab750fdf8b9`
-    //       }
-    //     }).then((res) => {
-    //     console.log('done')
-    //   }).catch((e) => {
-    //     console.log(e)
-    //   })
-
     const trimmedPhone = phone.split('+')[1]
 
     if (!this.configService.get('isDev')) {
@@ -68,8 +50,41 @@ export class AuthService {
         })
     }
 
+    return { confirmationToken, confirmationCode };
+  }
 
-    // this.mailerService.sendConfirmationEmail(user, confirmationCode);
+
+  async createViaEmail(props: CodeDTOViaEmail): Promise<any> {
+    const { email, name } = props
+    let user = await this.usersService.findOneByEmail(email)
+
+    if (!user) {
+      user = await this.usersService.createViaEmail({
+        email: email,
+        name,
+      })
+    }
+
+    const { confirmationToken, confirmationCode } = await this.generateConfirmationToken(user, this.configService.get('frontendDomain'))
+
+    axios.post('https://api.notisend.ru/v1/email/messages', {
+        "from_email":"ceo@kidsproject.team",
+        "from_name": "Звезды будущего",
+        "to": email,
+        "subject": "Код для подтверждения аккаунта",
+        "text": "Ваш код для подтверждения аккаунта на сайте Звезды будущего",
+        "html": "<h1>Ваш код для подтверждения аккаунта: "  + confirmationCode + "</h1>"
+      },
+        {
+          headers: {
+            Authorization: `Bearer ${this.configService.get('mailBearer')}`
+          }
+        }).then((res) => {
+        console.log('done')
+      }).catch((e) => {
+        console.log(e)
+      })
+
     return { confirmationToken, confirmationCode };
   }
 

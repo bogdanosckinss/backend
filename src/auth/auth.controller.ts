@@ -33,6 +33,14 @@ export class AuthController {
   }
 
   @Public()
+  @Post('/create/email')
+  async createViaEmail(
+    @Body() props: any,
+  ): Promise<any> {
+    return this.authService.createViaEmail({ ...props })
+  }
+
+  @Public()
   @Delete('/logout')
   async logout(
     @CurrentUser() id: number,
