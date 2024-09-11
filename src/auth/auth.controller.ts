@@ -83,7 +83,7 @@ export class AuthController {
 
   private refreshTokenFromReq(req: FastifyRequest): string {
     const token: string | undefined = req.cookies['rf'];
-    console.log(token)
+    console.log(req.cookies)
 
     if (isUndefined(token) || isNull(token)) {
       throw new UnauthorizedException();
