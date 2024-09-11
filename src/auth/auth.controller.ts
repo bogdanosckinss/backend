@@ -69,7 +69,6 @@ export class AuthController {
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
   ): Promise<any> {
-    console.log(req.headers)
     const token = this.refreshTokenFromReq(req)
     const result = await this.authService.refreshTokenAccess(
       token,
