@@ -69,6 +69,7 @@ export class AuthController {
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
   ): Promise<any> {
+    console.log(req.headers)
     const token = this.refreshTokenFromReq(req)
     const result = await this.authService.refreshTokenAccess(
       token,
@@ -83,7 +84,6 @@ export class AuthController {
 
   private refreshTokenFromReq(req: FastifyRequest): string {
     const token: string | undefined = req.cookies['rf'];
-    console.log(req.cookies)
 
     if (isUndefined(token) || isNull(token)) {
       throw new UnauthorizedException();
