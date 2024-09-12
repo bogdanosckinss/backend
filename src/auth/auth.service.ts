@@ -68,7 +68,7 @@ export class AuthService {
     const { confirmationToken, confirmationCode } = await this.generateConfirmationToken(user, this.configService.get('frontendDomain'))
 
     axios.post('https://api.notisend.ru/v1/email/messages', {
-        "from_email":"ceo@kidsproject.team",
+        "from_email": this.configService.get('mailAddress'),
         "from_name": "Звезды будущего",
         "to": email,
         "subject": "Код для подтверждения аккаунта",

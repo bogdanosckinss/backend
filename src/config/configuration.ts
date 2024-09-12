@@ -6,5 +6,6 @@ export default () => ({
   phoneAccessToken: process.env.PHONE_ACCESS_TOKEN || '',
   phoneNumber: process.env.PHONE_NUMBER || '',
   isDev: process.env.ISDEV || false,
-  mailBearer: process.env.MAIL_BEARER || false
+  mailBearer: process.env.MAIL_BEARER || false,
+  mailAddress: process.env.MAIL_ADDRESS || false
 })
