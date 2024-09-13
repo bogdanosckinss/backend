@@ -17,8 +17,6 @@ import { Public } from '../auth/decorators/public.decorator';
 import { FastifyReply } from 'fastify';
 import {createReadStream} from 'fs'
 import { join } from 'path';
-import EasyYandexS3 from 'easy-yandex-s3';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 
 @Controller('content')
@@ -64,6 +62,28 @@ export class ContentController {
     @Query('skip') skip
   ) {
     return await this.contentService.getVideosToModerate(skip ?? 0)
+  }
+
+  @Public()
+  @Get('/videos-to-moderate/declined')
+  async getDeclinedVideosToModerate(
+    @Query('skip') skip
+  ) {
+    return await this.contentService.getDeclinedVideos(skip ?? 0)
+  }
+
+  @Public()
+  @Get('/videos-to-moderate/count')
+  async getDeclinedVideosCount() {
+    return await this.contentService.getDeclinedVideosCount()
+  }
+
+  @Public()
+  @Get('/videos-to-moderate/approved')
+  async getApprovedVideosToModerate(
+    @Query('skip') skip
+  ) {
+    return await this.contentService.getApprovedVideos(skip ?? 0)
   }
 
   @Public()

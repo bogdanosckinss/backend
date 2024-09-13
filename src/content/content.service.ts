@@ -92,6 +92,109 @@ export class ContentService {
     })
   }
 
+  async getDeclinedVideos(skip: string): Promise<any> {
+    const videos = await this.dbService.$queryRaw`
+    Select *, video.id as video_d from videos as video
+    JOIN users as userc on video.user_id = userc.id
+    JOIN song as ss on ss.id = video.song_id
+    WHERE NOT video.allowed AND NOT video.under_moderation
+    ORDER BY video.created_at DESC
+    LIMIT 10 OFFSET ${parseInt(skip)}
+    `
+
+    if (!Array.isArray(videos)) {
+      return []
+    }
+
+    return videos.map(video => {
+      return {
+        ...video,
+        id: video.video_d,
+        users: {
+          name: video.name,
+          lastname: video.lastname,
+          city: video.city,
+          age: video.age,
+          email: video.email,
+          image: video.image,
+          phone_number: video.phone_number,
+          social_media_link: video.social_media_link
+        },
+        song: {
+          author_name: video.author_name,
+          title: video.title,
+          image_link: video.image_link
+        },
+      }
+    })
+  }
+
+  async getDeclinedVideosCount(): Promise<any> {
+    const declinedVideosCount = await this.dbService.$queryRaw`
+    Select COUNT(video.*) as countToShow from videos as video
+    WHERE NOT video.allowed AND NOT video.under_moderation`
+
+    const acceptedVideosCount = await this.dbService.$queryRaw`
+    Select COUNT(video.*) as countToShow from videos as video
+    WHERE video.allowed IS TRUE AND NOT video.under_moderation`
+
+    const underModerationVideosCount = await this.dbService.$queryRaw`
+    Select COUNT(video.*) as countToShow from videos as video
+    WHERE NOT video.allowed AND video.under_moderation IS TRUE`
+
+    const totalModerationVideosCount = await this.dbService.$queryRaw`
+    Select COUNT(video.*) as countToShow from videos as video`
+
+    if (!declinedVideosCount || declinedVideosCount == 'unknown') {
+      return 0
+    }
+
+    // @ts-ignore
+    return {
+      accepted: parseInt(acceptedVideosCount[0]?.counttoshow ?? 0),
+      declined: parseInt(declinedVideosCount[0]?.counttoshow ?? 0),
+      underModeration: parseInt(underModerationVideosCount[0]?.counttoshow ?? 0),
+      total: parseInt(totalModerationVideosCount[0]?.counttoshow ?? 0)
+    }
+  }
+
+  async getApprovedVideos(skip: string): Promise<any> {
+    const videos = await this.dbService.$queryRaw`
+    Select *, video.id as video_d from videos as video
+    JOIN users as userc on video.user_id = userc.id
+    JOIN song as ss on ss.id = video.song_id
+    WHERE video.allowed IS TRUE AND video.under_moderation IS FALSE
+    ORDER BY video.created_at ASC
+    LIMIT 10 OFFSET ${parseInt(skip)}
+    `
+
+    if (!Array.isArray(videos)) {
+      return []
+    }
+
+    return videos.map(video => {
+      return {
+        ...video,
+        id: video.video_d,
+        users: {
+          name: video.name,
+          lastname: video.lastname,
+          city: video.city,
+          age: video.age,
+          email: video.email,
+          image: video.image,
+          phone_number: video.phone_number,
+          social_media_link: video.social_media_link
+        },
+        song: {
+          author_name: video.author_name,
+          title: video.title,
+          image_link: video.image_link
+        },
+      }
+    })
+  }
+
   async getContent(id: number): Promise<any> {
     return {};
     // return this.dbService.video.findMany({
