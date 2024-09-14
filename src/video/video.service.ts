@@ -11,6 +11,7 @@ export class VideoService {
         link: videoLink,
         user_id: userId,
         song_id: songId,
+        //@ts-ignore
         preview_url: previewUrl
       }
     })
