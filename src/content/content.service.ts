@@ -1,7 +1,6 @@
 import { Injectable, StreamableFile } from '@nestjs/common';
 import { DbService } from '../db/db.service'
 import { ProfileDTO } from './dto/profile-d-t-o';
-import { contains } from 'class-validator';
 import { createReadStream } from 'fs';
 
 @Injectable()
@@ -231,7 +230,7 @@ export class ContentService {
     // })
   }
 
-  async findManyVideosByUsername(skip: string, query: string, userId: number): Promise<any> {
+  async findManyVideosByUsername(skip: string, query: string, userId: number, startVideoId: string): Promise<any> {
     const videos = await this.dbService.$queryRaw`
     Select *, video.id as video_d, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id AND videoLike.user_id = ${userId}) as is_liked_by_me, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id) as video_likes from videos as video
     JOIN users as userc on video.user_id = userc.id
@@ -267,106 +266,6 @@ export class ContentService {
         videoLikes: parseInt(video.video_likes)
       }
     })
-
-    // return this.dbService.video.findMany({
-    //   skip: parseInt(skip),
-    //   take: 10,
-    //   where: {
-    //       OR: [
-    //         {
-    //           song: {
-    //             title: {
-    //               contains: query,
-    //               mode: 'insensitive'
-    //             }
-    //           }
-    //         },
-    //         {
-    //           song: {
-    //             title: {
-    //               in: [...query.split(' '), ...query.toLowerCase().split(' ')]
-    //             }
-    //           }
-    //         },
-    //         {
-    //           OR: [
-    //             {
-    //               users: {
-    //                 lastname: {
-    //                   in: [...query.split(' '), ...query.toLowerCase().split(' ')],
-    //                 }
-    //               }
-    //             },
-    //             {
-    //               users: {
-    //                 name: {
-    //                   in: [...query.split(' '), ...query.toLowerCase().split(' ')],
-    //                 }
-    //               }
-    //             },
-    //             {
-    //               users: {
-    //                 name: {
-    //                   contains: query,
-    //                 }
-    //               }
-    //             },
-    //             {
-    //               users: {
-    //                 lastname: {
-    //                   contains: query,
-    //                 }
-    //               }
-    //             },
-    //             {
-    //               users: {
-    //                 name: {
-    //                   contains: query.toLowerCase(),
-    //                 }
-    //               }
-    //             },
-    //             {
-    //               users: {
-    //                 lastname: {
-    //                   contains: query.toLowerCase(),
-    //                 }
-    //               }
-    //             },
-    //             {
-    //               users: {
-    //                 lastname: {
-    //                   contains: query.replaceAll(' ', ' | ') + ' | ' + (query.split(' ').reverse().join(' ')).replaceAll(' ', ' | '),
-    //                   mode: 'insensitive'
-    //                 }
-    //               }
-    //             }
-    //           ]
-    //         }
-    //       ],
-    //     under_moderation: false,
-    //     allowed: true
-    //   },
-    //   orderBy: {
-    //     videoLikes: {
-    //       _count: 'desc'
-    //     }
-    //   },
-    //   include: {
-    //     users: true,
-    //     song: true,
-    //     videoLikes: {
-    //       select: {
-    //         id: true,
-    //         video_id: true,
-    //         user: {
-    //           select: {
-    //             id: true,
-    //           },
-    //         },
-    //       },
-    //     }
-    //   }
-    // })
   }
 
   async findManyUsersByName(name: string): Promise<any> {

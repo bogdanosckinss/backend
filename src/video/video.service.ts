@@ -5,12 +5,13 @@ import { DbService } from '../db/db.service'
 export class VideoService {
   constructor(private dbService: DbService) {}
 
-  async upload(userId: number, videoLink: string, songId: number): Promise<any> {
+  async upload(userId: number, videoLink: string, songId: number, previewUrl: string): Promise<any> {
     return this.dbService.video.create({
       data: {
         link: videoLink,
         user_id: userId,
-        song_id: songId
+        song_id: songId,
+        preview_url: previewUrl
       }
     })
   }

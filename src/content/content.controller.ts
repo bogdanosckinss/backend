@@ -52,8 +52,9 @@ export class ContentController {
     @CurrentUser() id: number,
     @Query('skip') skip,
     @Query('query') query,
+    @Query('video') video,
   ) {
-    return await this.contentService.findManyVideosByUsername(skip ?? 0, query, id ?? 0)
+    return await this.contentService.findManyVideosByUsername(skip ?? 0, query, id ?? 0, video ?? 0)
   }
 
   @Public()
@@ -150,7 +151,7 @@ export class ContentController {
       throw new BadRequestException
     }
 
-    const video = await this.videoService.upload(id, data.video, data.songId)
+    const video = await this.videoService.upload(id, data.video, data.songId, data?.preview_url ?? '')
 
     return await this.contentService.uploadContent(id, data, video.id)
   }
