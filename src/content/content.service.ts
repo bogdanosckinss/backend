@@ -231,11 +231,12 @@ export class ContentService {
   }
 
   async findManyVideosByUsername(skip: string, query: string, userId: number, startVideoId: string): Promise<any> {
+    const queryToUse = query == 'null' ? '' : query
     const videos = await this.dbService.$queryRaw`
     Select *, video.id as video_d, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id AND videoLike.user_id = ${userId}) as is_liked_by_me, (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id) as video_likes from videos as video
     JOIN users as userc on video.user_id = userc.id
     JOIN song as ss on ss.id = video.song_id
-    WHERE video.allowed AND (LOWER(CONCAT(userc.lastname, ' ', userc.name)) LIKE LOWER(${'%' + query + '%'}) OR LOWER(CONCAT(userc.name, ' ', userc.lastname)) LIKE LOWER(${'%' + query + '%'}) OR LOWER(userc.name) LIKE LOWER(${'%' + query + '%'}) OR LOWER(ss.title) LIKE LOWER(${'%' + query + '%'}))
+    WHERE video.allowed AND (LOWER(CONCAT(userc.lastname, ' ', userc.name)) LIKE LOWER(${'%' + queryToUse + '%'}) OR LOWER(CONCAT(userc.name, ' ', userc.lastname)) LIKE LOWER(${'%' + queryToUse + '%'}) OR LOWER(userc.name) LIKE LOWER(${'%' + queryToUse + '%'}) OR LOWER(ss.title) LIKE LOWER(${'%' + queryToUse + '%'}))
     ORDER BY (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id) DESC, video.created_at ASC
     LIMIT 10 OFFSET ${parseInt(skip)}
     `

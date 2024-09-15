@@ -54,7 +54,7 @@ export class ContentController {
     @Query('query') query,
     @Query('video') video,
   ) {
-    return await this.contentService.findManyVideosByUsername(skip ?? 0, query, id ?? 0, video ?? 0)
+    return await this.contentService.findManyVideosByUsername(skip ?? 0, query ?? '', id ?? 0, video ?? 0)
   }
 
   @Public()
