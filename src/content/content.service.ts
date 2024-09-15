@@ -236,7 +236,7 @@ export class ContentService {
     JOIN users as userc on video.user_id = userc.id
     JOIN song as ss on ss.id = video.song_id
     WHERE video.allowed AND (LOWER(CONCAT(userc.lastname, ' ', userc.name)) LIKE LOWER(${'%' + query + '%'}) OR LOWER(CONCAT(userc.name, ' ', userc.lastname)) LIKE LOWER(${'%' + query + '%'}) OR LOWER(userc.name) LIKE LOWER(${'%' + query + '%'}) OR LOWER(ss.title) LIKE LOWER(${'%' + query + '%'}))
-    ORDER BY (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id) DESC
+    ORDER BY (SELECT count(*) from video_likes as videoLike where videoLike.video_id = video.id) DESC, video.created_at ASC
     LIMIT 10 OFFSET ${parseInt(skip)}
     `
 
