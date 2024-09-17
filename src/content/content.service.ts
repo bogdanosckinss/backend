@@ -51,7 +51,11 @@ export class ContentService {
   }
 
   async getSongs(): Promise<any> {
-    return this.dbService.song.findMany()
+    return this.dbService.song.findMany({
+      orderBy: {
+        id: 'desc'
+      }
+    })
   }
 
   async getVideosToModerate(skip: string): Promise<any> {
