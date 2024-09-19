@@ -40,7 +40,7 @@ export class AuthService {
       axios.post('https://api.exolve.ru/messaging/v1/SendSMS', {
           number: '79842698582',
           destination: trimmedPhone,
-          text: 'Конкурс Талантов «Детский мир» | код для подтверждение: ' + confirmationCode
+          text: 'Конкурс Талантов «Детский мир» | код для подтверждения: ' + confirmationCode
         },
         {
           headers: {

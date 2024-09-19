@@ -145,10 +145,16 @@ export class ContentController {
   @Post('/create')
   async create(
     @CurrentUser() id: number,
-    @Body() data: any
+    @Body() data: any,
+    @Res() res: FastifyReply,
   ) {
     if (!id) {
       throw new BadRequestException
+    }
+
+    const existingVideo = await this.videoService.findOneByUserId(id.toString())
+    if (existingVideo) {
+      return res.send()
     }
 
     const video = await this.videoService.upload(id, data.video, data.songId, data?.preview_url ?? '')
