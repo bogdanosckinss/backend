@@ -146,19 +146,20 @@ export class ContentController {
   async create(
     @CurrentUser() id: number,
     @Body() data: any,
+    @Res({passthrough: true}) res: FastifyReply,
   ) {
     if (!id) {
       throw new BadRequestException
     }
 
-    // const existingVideo = await this.videoService.findOneByUserId(id.toString())
-    // if (existingVideo) {
-    //   return res.send()
-    // }
+    const existingVideo = await this.videoService.findOneByUserId(id.toString())
+    if (existingVideo) {
+      return res.send()
+    }
 
     const video = await this.videoService.upload(id, data.video, data.songId, data?.preview_url ?? '')
-
-    return await this.contentService.uploadContent(id, data, video.id)
+    const uploadContent = await this.contentService.uploadContent(id, data, video.id)
+    return res.send(uploadContent)
   }
 
   @Public()

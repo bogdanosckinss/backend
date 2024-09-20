@@ -129,7 +129,13 @@ export class VideoService {
   }
 
   async findOneByUserId(userId: string): Promise<any> {
-    return {}
+    return this.dbService.video.findFirst({
+      where: {
+        users : {
+          id: parseInt(userId)
+        }
+      }
+    })
     // return this.dbService.video.findFirst({
     //   where: {
     //     users: {
