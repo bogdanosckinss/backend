@@ -146,7 +146,6 @@ export class ContentController {
   async create(
     @CurrentUser() id: number,
     @Body() data: any,
-    @Res() res: FastifyReply,
   ) {
     if (!id) {
       throw new BadRequestException
