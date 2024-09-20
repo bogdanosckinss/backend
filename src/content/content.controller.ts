@@ -152,10 +152,10 @@ export class ContentController {
       throw new BadRequestException
     }
 
-    const existingVideo = await this.videoService.findOneByUserId(id.toString())
-    if (existingVideo) {
-      return res.send()
-    }
+    // const existingVideo = await this.videoService.findOneByUserId(id.toString())
+    // if (existingVideo) {
+    //   return res.send()
+    // }
 
     const video = await this.videoService.upload(id, data.video, data.songId, data?.preview_url ?? '')
 
