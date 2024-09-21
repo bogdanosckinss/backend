@@ -37,6 +37,7 @@ model Video {
   under_moderation Boolean      @default(true)
   song_id          Int          @default(1)
   preview_url      String?      @default("")
+  deleted          Boolean      @default(false)
   videoVotes       VideoVotes[]
   song             Song         @relation(fields: [song_id], references: [id])
   users            User         @relation(fields: [user_id], references: [id])

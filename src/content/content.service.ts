@@ -19,6 +19,20 @@ export class ContentService {
     })
   }
 
+
+  async deleteVideo(videoId: string): Promise<any> {
+    return this.dbService.video.update({
+      where: {
+        id: parseInt(videoId)
+      },
+      data: {
+        under_moderation: false,
+        allowed: false,
+        deleted: true
+      }
+    })
+  }
+
   async uploadContent(userId: number, data: ProfileDTO, videoId: number): Promise<any> {
     return this.dbService.user.update({
       where: {
@@ -63,7 +77,7 @@ export class ContentService {
     Select *, video.id as video_d from videos as video
     JOIN users as userc on video.user_id = userc.id
     JOIN song as ss on ss.id = video.song_id
-    WHERE NOT video.allowed AND video.under_moderation IS TRUE
+    WHERE NOT video.allowed AND video.under_moderation IS TRUE AND NOT video.deleted
     ORDER BY video.created_at ASC
     LIMIT 10 OFFSET ${parseInt(skip)}
     `
@@ -100,7 +114,7 @@ export class ContentService {
     Select *, video.id as video_d from videos as video
     JOIN users as userc on video.user_id = userc.id
     JOIN song as ss on ss.id = video.song_id
-    WHERE NOT video.allowed AND NOT video.under_moderation
+    WHERE NOT video.allowed AND NOT video.under_moderation AND NOT video.deleted
     ORDER BY video.created_at DESC
     LIMIT 10 OFFSET ${parseInt(skip)}
     `
@@ -135,18 +149,18 @@ export class ContentService {
   async getDeclinedVideosCount(): Promise<any> {
     const declinedVideosCount = await this.dbService.$queryRaw`
     Select COUNT(video.*) as countToShow from videos as video
-    WHERE NOT video.allowed AND NOT video.under_moderation`
+    WHERE NOT video.allowed AND NOT video.under_moderation AND NOT video.deleted`
 
     const acceptedVideosCount = await this.dbService.$queryRaw`
     Select COUNT(video.*) as countToShow from videos as video
-    WHERE video.allowed IS TRUE AND NOT video.under_moderation`
+    WHERE video.allowed IS TRUE AND NOT video.under_moderation AND NOT video.deleted`
 
     const underModerationVideosCount = await this.dbService.$queryRaw`
     Select COUNT(video.*) as countToShow from videos as video
-    WHERE NOT video.allowed AND video.under_moderation IS TRUE`
+    WHERE NOT video.allowed AND video.under_moderation IS TRUE AND NOT video.deleted`
 
     const totalModerationVideosCount = await this.dbService.$queryRaw`
-    Select COUNT(video.*) as countToShow from videos as video`
+    Select COUNT(video.*) as countToShow from videos as video WHERE NOT video.deleted`
 
     if (!declinedVideosCount || declinedVideosCount == 'unknown') {
       return 0

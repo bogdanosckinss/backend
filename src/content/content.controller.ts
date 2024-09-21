@@ -142,6 +142,16 @@ export class ContentController {
     return await this.contentService.updateVideoModerationStatus(data)
   }
 
+  @Public()
+  @Delete('/update-video-moderation/delete/:id')
+  async deleteVideo(
+    @Param('id') videoId,
+    @Body() data: any
+  ) {
+    return await this.contentService.deleteVideo(videoId)
+  }
+
+
   @Post('/create')
   async create(
     @CurrentUser() id: number,
