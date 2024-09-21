@@ -181,7 +181,7 @@ export class ContentService {
     JOIN users as userc on video.user_id = userc.id
     JOIN song as ss on ss.id = video.song_id
     WHERE video.allowed IS TRUE AND video.under_moderation IS FALSE
-    ORDER BY video.created_at ASC
+    ORDER BY video.id DESC
     LIMIT 10 OFFSET ${parseInt(skip)}
     `
 
