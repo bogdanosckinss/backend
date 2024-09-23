@@ -18,12 +18,14 @@ import { FastifyReply } from 'fastify';
 import {createReadStream} from 'fs'
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from '../users/users.service';
 
 @Controller('content')
 export class ContentController {
   constructor(
     private config: ConfigService,
     private contentService: ContentService,
+    private userService: UsersService,
     private videoService: VideoService
   ) {}
 
@@ -190,6 +192,14 @@ export class ContentController {
   ) {
     if (!id) {
       return {message: 'something happened'}
+    }
+
+    const user = await this.userService.findOneById(id)
+
+    if (!user) {
+      return {
+        message: 'Unauthorized user'
+      }
     }
 
     return await this.videoService.toggleLike(id.toString(), data.videoId)

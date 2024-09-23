@@ -119,6 +119,11 @@ export class AuthService {
       )
 
     const user = await this.usersService.findOneById(id)
+
+    if (!user) {
+      throw Error('Not found')
+    }
+
     const [accessToken, newRefreshToken] =
       await this.jwtService.generateAuthTokens(user, domain, tokenId)
     return { user, accessToken, refreshToken: newRefreshToken }

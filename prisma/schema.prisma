@@ -40,7 +40,7 @@ model Video {
   deleted          Boolean      @default(false)
   videoVotes       VideoVotes[]
   song             Song         @relation(fields: [song_id], references: [id])
-  users            User         @relation(fields: [user_id], references: [id])
+  users            User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("videos")
 }
@@ -49,7 +49,7 @@ model VideoLikes {
   id       Int  @id @default(autoincrement())
   user_id  Int
   video_id Int
-  user     User @relation(fields: [user_id], references: [id])
+  user     User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("video_likes")
 }

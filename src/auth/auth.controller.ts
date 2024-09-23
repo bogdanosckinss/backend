@@ -78,16 +78,19 @@ export class AuthController {
     @Res() res: FastifyReply,
   ): Promise<any> {
     const token = this.refreshTokenFromReq(req)
-    const result = await this.authService.refreshTokenAccess(
-      token,
-      req.headers.origin,
-    );
-    this.saveRefreshCookie(res, result.refreshToken)
-      .status(HttpStatus.OK)
-      .send(result)
+
+    try {
+      const result = await this.authService.refreshTokenAccess(
+        token,
+        req.headers.origin,
+      )
+      this.saveRefreshCookie(res, result.refreshToken)
+        .status(HttpStatus.OK)
+        .send(result)
+    } catch (exception) {
+      return res.code(404).type('text/html').send('User was not found')
+    }
   }
-
-
 
   private refreshTokenFromReq(req: FastifyRequest): string {
     const token: string | undefined = req.cookies['rf'];

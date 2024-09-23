@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { UsersService } from './users.service'
 import { Public } from '../auth/decorators/public.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -26,6 +26,28 @@ export class UsersController {
   }
 
   @Public()
+  @Get('/list')
+  async getUsers(
+    @Query('skip') skip
+  ) {
+    return await this.userService.getUsers(skip ?? 0)
+  }
+
+  @Public()
+  @Delete('/delete/:id')
+  async deleteUser(
+    @Param('id') userId
+  ) {
+    const user  = await this.userService.findOneById(userId)
+
+    if (!user) {
+      return 'Not found'
+    }
+
+    return await this.userService.deleteById(userId)
+  }
+
+  @Public()
   @Put('/image')
   async updateImage(
     @CurrentUser() id: number,
@@ -37,13 +59,4 @@ export class UsersController {
 
     return await this.userService.updateImage(id, data.image)
   }
-
-
-/*  @Put('/update-name-info')
-  async saveNameInfo(
-    @CurrentUser() id: number,
-    @Body() data: UserUpdateNameInfoDto
-  ) {
-    await this.userService.saveNameInfo(data, id)
-  }*/
 }

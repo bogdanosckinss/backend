@@ -44,6 +44,24 @@ export class UsersService {
     })
   }
 
+  async getUsers(skip: string): Promise<User[]> {
+    return this.dbService.user.findMany({
+      skip: parseInt(skip),
+      take: 50,
+      orderBy: {
+        id: 'desc'
+      }
+    })
+  }
+
+  async deleteById(id: string): Promise<User> {
+    return this.dbService.user.delete({
+      where: {
+        id: parseInt(id)
+      }
+    })
+  }
+
   async findOneByEmail(email: string): Promise<User> {
     return this.dbService.user.findFirst({
       where: {
