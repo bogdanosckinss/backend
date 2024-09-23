@@ -44,10 +44,18 @@ export class UsersService {
     })
   }
 
-  async getUsers(skip: string): Promise<User[]> {
+  async getUsers(skip: string, authors: boolean): Promise<User[]> {
     return this.dbService.user.findMany({
+      where: !authors ?
+        {
+          videos: {
+            none: {
+
+            }
+          }
+        } : {},
       skip: parseInt(skip),
-      take: 50,
+      take: 200,
       orderBy: {
         id: 'desc'
       }

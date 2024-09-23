@@ -28,9 +28,10 @@ export class UsersController {
   @Public()
   @Get('/list')
   async getUsers(
-    @Query('skip') skip
+    @Query('skip') skip,
+    @Query('authors') authors,
   ) {
-    return await this.userService.getUsers(skip ?? 0)
+    return await this.userService.getUsers(skip ?? 0, authors ?? false)
   }
 
   @Public()
