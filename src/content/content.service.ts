@@ -8,11 +8,17 @@ export class ContentService {
   constructor(private dbService: DbService) {}
 
   async updateVideoModerationStatus(data): Promise<any> {
+    let dataToUpdate = {
+      under_moderation: false,
+      allowed: data.allowed
+    }
+
+    if (data.allowed) {
+      dataToUpdate['preview_url'] = data?.previewImage ?? ''
+    }
+
     return this.dbService.video.update({
-      data: {
-        under_moderation: false,
-        allowed: data.allowed
-      },
+      data: dataToUpdate,
       where: {
         id: data.videoId
       }
