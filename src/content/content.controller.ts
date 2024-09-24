@@ -205,6 +205,14 @@ export class ContentController {
     return await this.videoService.toggleLike(id.toString(), data.videoId)
   }
 
+  @Post('/log')
+  async logAMessage(
+    @Body() data: any
+  ) {
+    console.log(data)
+    return {}
+  }
+
   @Post('/vote')
   async voteForVideo(
     @CurrentUser() id: number,
