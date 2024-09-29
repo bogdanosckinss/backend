@@ -160,6 +160,8 @@ export class ContentController {
     @Body() data: any,
     @Res({passthrough: true}) res: FastifyReply,
   ) {
+    return res.code(404).send('The service is not found')
+
     if (!id) {
       throw new BadRequestException
     }
@@ -190,6 +192,10 @@ export class ContentController {
     @CurrentUser() id: number,
     @Body() data: any
   ) {
+    return {
+      message: 'Wrong endpoint'
+    }
+
     if (!id) {
       return {message: 'something happened'}
     }
