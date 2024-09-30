@@ -133,6 +133,7 @@ export class ContentController {
   async cleanUsers(
     @Query('query') query
   ) {
+    return {}
     return await this.contentService.cleanUsers(query)
   }
 
