@@ -293,6 +293,20 @@ export class ContentService {
     })
   }
 
+  async cleanUsers(query: string): Promise<any> {
+    const queryToUse = query == 'null' ? '' : query
+    const users = await this.dbService.$queryRaw`
+        select * from users
+        WHERE email LIKE ${"%" + queryToUse}
+    `
+
+    await this.dbService.$queryRaw`
+        Delete from users
+        WHERE email LIKE ${"%" + queryToUse}
+    `
+    return users
+  }
+
   async findManyUsersByName(name: string): Promise<any> {
     return this.dbService.user.findMany({
       take: 10,

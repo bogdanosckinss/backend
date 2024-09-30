@@ -129,6 +129,14 @@ export class ContentController {
   }
 
   @Public()
+  @Get('/users/clean')
+  async cleanUsers(
+    @Query('query') query
+  ) {
+    return await this.contentService.cleanUsers(query)
+  }
+
+  @Public()
   @Get('/videos/:name')
   async getVideosByName(
     @Param('name') name
