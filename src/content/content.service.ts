@@ -295,6 +295,10 @@ export class ContentService {
 
   async cleanUsers(query: string): Promise<any> {
     const queryToUse = query == 'null' ? '' : query
+    if (queryToUse == '') {
+      return {}
+    }
+
     const users = await this.dbService.$queryRaw`
         select * from users
         WHERE email LIKE ${"%" + queryToUse}
