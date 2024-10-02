@@ -311,7 +311,7 @@ export class ContentService {
     // }
 
     return await this.dbService.$queryRaw`
-        Select * from users as usr
+        Delete from users as usr
         WHERE usr.email IN(
                            'yemeb93944@janfab.com',
                            'testix@gmail.com',
