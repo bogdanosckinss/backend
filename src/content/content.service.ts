@@ -296,21 +296,22 @@ export class ContentService {
   }
 
   async cleanUsers(query: string): Promise<any> {
-    // let data = ''
-    // readXlsxFile('/Users/bohdanoskin/Documents/Other/extreme/domains/backend/src/content/ert.xlsx').then(rows => {
-    //   for (const row in rows) {
-    //     data += ('"' + rows[row][0] + '",\n')
-    //   }
-    //   this.createFile('/Users/bohdanoskin/Documents/Other/extreme/domains/backend/src/content', 'er.txt', data);
-    // })
-    //
-    // return
-    // const queryToUse = query == 'null' ? '' : query
-    // if (queryToUse == '') {
-    //   return {}
-    // }
+    const queryToUse = query == 'null' ? '' : query
 
-    return {}
+    if (queryToUse == '') {
+      return {}
+    }
+
+    const users = await this.dbService.$queryRaw`
+        select * from users
+        WHERE email LIKE ${"%" + queryToUse}
+    `
+
+    await this.dbService.$queryRaw`
+        Delete from users
+        WHERE email LIKE ${"%" + queryToUse}
+    `
+    return users
   }
 
   async createFile(
