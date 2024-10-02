@@ -131,10 +131,8 @@ export class ContentController {
   @Public()
   @Get('/users/clean')
   async cleanUsers(
-    @Query('query') query
   ) {
-    return {}
-    return await this.contentService.cleanUsers(query)
+    return await this.contentService.cleanUsers('')
   }
 
   @Public()
