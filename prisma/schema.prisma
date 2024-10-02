@@ -30,17 +30,17 @@ model User {
 model Video {
   id               Int          @id @default(autoincrement())
   user_id          Int
+  song_id          Int          @default(1)
   link             String
+  under_moderation Boolean      @default(true)
+  allowed          Boolean      @default(false)
   created_at       DateTime?    @default(now())
   updated_at       DateTime?    @updatedAt
-  allowed          Boolean      @default(false)
-  under_moderation Boolean      @default(true)
-  song_id          Int          @default(1)
   preview_url      String?      @default("")
   deleted          Boolean      @default(false)
   videoVotes       VideoVotes[]
   song             Song         @relation(fields: [song_id], references: [id])
-  users            User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  users            User         @relation(fields: [user_id], references: [id])
 
   @@map("videos")
 }
