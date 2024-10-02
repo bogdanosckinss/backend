@@ -40,7 +40,7 @@ model Video {
   deleted          Boolean      @default(false)
   videoVotes       VideoVotes[]
   song             Song         @relation(fields: [song_id], references: [id])
-  users            User         @relation(fields: [user_id], references: [id])
+  users            User         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("videos")
 }
